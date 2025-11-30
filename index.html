@@ -81,7 +81,7 @@
                         </div>
                         <div class="ritual-item">
                             <h4>Alcohol Intentionality</h4>
-                            <p>Decide your max drinks for today (0–2). Log why that limit matters.</p>
+                            <p>Set a realistic max drinks plan (0–12) and note why that limit matters.</p>
                         </div>
                         <div class="ritual-item">
                             <h4>Hydration Goal</h4>
@@ -135,13 +135,20 @@
                             <div class="progress-bar danger">
                                 <div class="progress-fill" id="alcoholProgress"></div>
                             </div>
-                            <span class="progress-text" id="alcoholText">0/2 max drinks</span>
+                            <span class="progress-text" id="alcoholText">0/6 max drinks</span>
                         </div>
                         <div class="quest-controls">
                             <button class="quest-btn minus" onclick="adjustQuest('alcohol', -1)">−</button>
                             <button class="quest-btn plus" onclick="adjustQuest('alcohol', 1)">+</button>
                         </div>
-                        <p class="quest-note">Stay under limit to survive</p>
+                        <div class="limit-controls">
+                            <label for="alcoholLimitInput">Set today's limit</label>
+                            <div class="limit-input-row">
+                                <input type="number" id="alcoholLimitInput" min="0" max="12" value="6">
+                                <button class="quest-btn update" onclick="setAlcoholLimit()">Update</button>
+                            </div>
+                        </div>
+                        <p class="quest-note">Stay under your chosen limit to survive</p>
                     </div>
 
                     <!-- Steps/Exercise Quest -->

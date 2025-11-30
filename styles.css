@@ -512,6 +512,29 @@ body {
     align-items: center;
 }
 
+.limit-controls {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+.limit-input-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.limit-controls input {
+    width: 90px;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid rgba(45, 212, 255, 0.4);
+    background: rgba(26, 31, 46, 0.6);
+    color: #e5e7eb;
+}
+
 .quest-btn {
     flex: 1;
     padding: 0.75rem;
