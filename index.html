@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crystal Cove Escape - Complete Wellness Journey</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated background particles -->
+    <div class="particles-container" id="particles"></div>
+    
+    <!-- Health Status Bar (always visible) -->
+    <div class="health-bar-container">
+        <div class="health-bar-inner">
+            <span class="health-label">Life Force</span>
+            <div class="health-bar">
+                <div class="health-fill" id="healthFill"></div>
+            </div>
+            <span class="health-value" id="healthValue">100%</span>
+        </div>
+        <div class="danger-warning hidden" id="dangerWarning">
+            ⚠️ Critical: Complete quests or face consequences
+        </div>
+    </div>
+    
+    <!-- Main container -->
+    <div class="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1 class="game-title">Crystal Cove</h1>
+            <p class="game-subtitle">Survive Through Wellness</p>
+            <div class="day-counter">Day <span id="dayCounter">1</span></div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="game-nav">
+            <button class="nav-btn active" data-section="dashboard">Quest Board</button>
+            <button class="nav-btn" data-section="story">Story</button>
+            <button class="nav-btn" data-section="tracking">All Trackers</button>
+            <button class="nav-btn" data-section="achievements">Achievements</button>
+            <button class="nav-btn" data-section="companions">Companions</button>
+        </nav>
+
+        <!-- QUEST BOARD / DASHBOARD (NEW MAIN VIEW) -->
+        <section id="dashboard" class="game-section active">
+            <div class="dashboard-layout">
+                
+                <!-- Morning Top 3 Section -->
+                <div class="top-three-card">
+                    <h2 class="card-title">🌅 Today's Top 3 Priorities</h2>
+                    <p class="card-subtitle">What MUST get done today to survive?</p>
+                    
+                    <div class="top-three-list">
+                        <div class="priority-item">
+                            <input type="text" class="priority-input" id="priority1" placeholder="Priority #1..." maxlength="60">
+                            <button class="priority-check" onclick="togglePriority(1)">✓</button>
+                        </div>
+                        <div class="priority-item">
+                            <input type="text" class="priority-input" id="priority2" placeholder="Priority #2..." maxlength="60">
+                            <button class="priority-check" onclick="togglePriority(2)">✓</button>
+                        </div>
+                        <div class="priority-item">
+                            <input type="text" class="priority-input" id="priority3" placeholder="Priority #3..." maxlength="60">
+                            <button class="priority-check" onclick="togglePriority(3)">✓</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quest Board Grid -->
+                <div class="quest-board-grid">
+                    
+                    <!-- Water Quest -->
+                    <div class="quest-card critical">
+                        <div class="quest-header">
+                            <span class="quest-icon">💧</span>
+                            <div>
+                                <h3 class="quest-name">Water Quest</h3>
+                                <span class="quest-badge critical-badge">CRITICAL</span>
+                            </div>
+                        </div>
+                        <div class="quest-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="waterProgress"></div>
+                            </div>
+                            <span class="progress-text" id="waterText">0/8 glasses</span>
+                        </div>
+                        <div class="quest-controls">
+                            <button class="quest-btn minus" onclick="adjustQuest('water', -1)">−</button>
+                            <button class="quest-btn plus" onclick="adjustQuest('water', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Alcohol Limit Quest -->
+                    <div class="quest-card critical">
+                        <div class="quest-header">
+                            <span class="quest-icon">🍺</span>
+                            <div>
+                                <h3 class="quest-name">Alcohol Limit</h3>
+                                <span class="quest-badge critical-badge">CRITICAL</span>
+                            </div>
+                        </div>
+                        <div class="quest-progress">
+                            <div class="progress-bar danger">
+                                <div class="progress-fill" id="alcoholProgress"></div>
+                            </div>
+                            <span class="progress-text" id="alcoholText">0/2 max drinks</span>
+                        </div>
+                        <div class="quest-controls">
+                            <button class="quest-btn minus" onclick="adjustQuest('alcohol', -1)">−</button>
+                            <button class="quest-btn plus" onclick="adjustQuest('alcohol', 1)">+</button>
+                        </div>
+                        <p class="quest-note">Stay under limit to survive</p>
+                    </div>
+
+                    <!-- Steps/Exercise Quest -->
+                    <div class="quest-card important">
+                        <div class="quest-header">
+                            <span class="quest-icon">👟</span>
+                            <div>
+                                <h3 class="quest-name">Movement Quest</h3>
+                                <span class="quest-badge important-badge">IMPORTANT</span>
+                            </div>
+                        </div>
+                        <div class="quest-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="stepsProgress"></div>
+                            </div>
+                            <span class="progress-text" id="stepsText">0/10,000 steps</span>
+                        </div>
+                        <div class="quest-controls">
+                            <input type="number" class="quest-input" id="stepsInput" placeholder="Steps...">
+                            <button class="quest-btn update" onclick="updateSteps()">Update</button>
+                        </div>
+                    </div>
+
+                    <!-- Sleep Quest -->
+                    <div class="quest-card important">
+                        <div class="quest-header">
+                            <span class="quest-icon">😴</span>
+                            <div>
+                                <h3 class="quest-name">Sleep Quest</h3>
+                                <span class="quest-badge important-badge">IMPORTANT</span>
+                            </div>
+                        </div>
+                        <div class="quest-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="sleepProgress"></div>
+                            </div>
+                            <span class="progress-text" id="sleepText">0/7 hours</span>
+                        </div>
+                        <div class="quest-controls">
+                            <input type="number" class="quest-input" id="sleepInput" placeholder="Hours..." step="0.5" max="12">
+                            <button class="quest-btn update" onclick="updateSleep()">Log</button>
+                        </div>
+                    </div>
+
+                    <!-- Mood Tracker -->
+                    <div class="quest-card optional">
+                        <div class="quest-header">
+                            <span class="quest-icon">😊</span>
+                            <div>
+                                <h3 class="quest-name">Mood Check</h3>
+                                <span class="quest-badge optional-badge">BONUS</span>
+                            </div>
+                        </div>
+                        <div class="mood-selector">
+                            <button class="mood-btn" data-mood="1" onclick="setMood(1)">😢</button>
+                            <button class="mood-btn" data-mood="2" onclick="setMood(2)">😕</button>
+                            <button class="mood-btn" data-mood="3" onclick="setMood(3)">😐</button>
+                            <button class="mood-btn" data-mood="4" onclick="setMood(4)">🙂</button>
+                            <button class="mood-btn" data-mood="5" onclick="setMood(5)">😄</button>
+                        </div>
+                        <p class="mood-label" id="moodLabel">How are you feeling?</p>
+                    </div>
+
+                    <!-- Food Tracker -->
+                    <div class="quest-card optional">
+                        <div class="quest-header">
+                            <span class="quest-icon">🍎</span>
+                            <div>
+                                <h3 class="quest-name">Nutrition Quest</h3>
+                                <span class="quest-badge optional-badge">BONUS</span>
+                            </div>
+                        </div>
+                        <div class="food-log">
+                            <div class="meal-check">
+                                <input type="checkbox" id="breakfast" onchange="updateMeals()">
+                                <label for="breakfast">Healthy Breakfast</label>
+                            </div>
+                            <div class="meal-check">
+                                <input type="checkbox" id="lunch" onchange="updateMeals()">
+                                <label for="lunch">Healthy Lunch</label>
+                            </div>
+                            <div class="meal-check">
+                                <input type="checkbox" id="dinner" onchange="updateMeals()">
+                                <label for="dinner">Healthy Dinner</label>
+                            </div>
+                        </div>
+                        <p class="progress-text" id="mealText">0/3 healthy meals</p>
+                    </div>
+
+                </div>
+
+                <!-- Daily Summary -->
+                <div class="daily-summary">
+                    <h3>Today's Status</h3>
+                    <div class="summary-stats">
+                        <div class="stat-item" id="criticalStat">
+                            <span class="stat-label">Critical Quests</span>
+                            <span class="stat-value">0/2</span>
+                        </div>
+                        <div class="stat-item" id="importantStat">
+                            <span class="stat-label">Important Quests</span>
+                            <span class="stat-value">0/2</span>
+                        </div>
+                        <div class="stat-item" id="bonusStat">
+                            <span class="stat-label">Bonus Completed</span>
+                            <span class="stat-value">0/2</span>
+                        </div>
+                    </div>
+                    <button class="end-day-btn" onclick="endDay()">End Day & Continue Story</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Story Section (ENHANCED WITH DANGER) -->
+        <section id="story" class="game-section">
+            <div class="story-card">
+                <div class="story-status">
+                    <span class="status-item">Chapter <span id="chapterNum">1</span></span>
+                    <span class="status-item">Health: <span id="storyHealth">100%</span></span>
+                    <span class="status-item">Days Survived: <span id="daysSurvived">0</span></span>
+                </div>
+
+                <div class="story-chapter">
+                    <span class="chapter-label" id="chapterLabel">CHAPTER 1</span>
+                    <h2 class="story-title" id="storyTitle">Awakening in Darkness</h2>
+                </div>
+                
+                <div class="story-content" id="storyContent">
+                    <p class="story-text">
+                        Your eyes flutter open to an otherworldly glow. Luminescent crystals pulse with soft light 
+                        along the cavern walls, casting dancing shadows across ancient stone. The air is cool and 
+                        still, carrying a faint mineral scent. You're in a cave unlike any you've seen before.
+                    </p>
+                    <p class="story-text">
+                        As your vision clears, you realize the terrible truth: you don't remember how you got here. 
+                        The last thing you recall is... nothing. Just darkness. And now, this strange and beautiful prison.
+                    </p>
+                    <p class="story-text">
+                        But something feels wrong. Your body aches, your mind is foggy. You're weak, dehydrated, 
+                        exhausted. If you don't take care of yourself, you won't survive long enough to escape.
+                    </p>
+                    <p class="story-text">
+                        A shimmer of light catches your attention. Two ethereal beings materialize before you—
+                        fairy-like creatures made of pure energy. One radiates warm, golden light. The other emanates 
+                        cool, silver shadows.
+                    </p>
+                    <p class="story-text danger-text">
+                        "Listen carefully," Astra, the light fairy, says urgently. "This cave feeds on neglect. 
+                        Every day you fail to care for yourself, it drains your life force. Let your health slip, 
+                        and the cave will consume you entirely."
+                    </p>
+                    <p class="story-text danger-text">
+                        Nox steps forward, her silver eyes serious. "She's right. We've seen it happen to others. 
+                        Your survival depends on your daily choices. Water, movement, rest—these aren't just goals. 
+                        They're your lifeline."
+                    </p>
+                </div>
+
+                <div class="choices-container" id="choicesContainer">
+                    <h3 class="choices-title">Who will guide your survival?</h3>
+                    <div class="choices-grid">
+                        <button class="choice-card light-path" onclick="makeChoice('astra')">
+                            <div class="choice-icon">✨</div>
+                            <h4>Trust Astra</h4>
+                            <p>The Light Fairy emphasizes discipline, routine, and ancient wisdom</p>
+                        </button>
+                        
+                        <button class="choice-card shadow-path" onclick="makeChoice('nox')">
+                            <div class="choice-icon">🌙</div>
+                            <h4>Trust Nox</h4>
+                            <p>The Shadow Fairy encourages bold risks and unconventional paths</p>
+                        </button>
+                        
+                        <button class="choice-card neutral-path" onclick="makeChoice('neutral')">
+                            <div class="choice-icon">⚖️</div>
+                            <h4>Trust Both</h4>
+                            <p>Balance their wisdom and find your own way forward</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Trackers Section (Detailed View) -->
+        <section id="tracking" class="game-section">
+            <div class="tracker-card">
+                <h2 class="section-title">Complete Tracker Dashboard</h2>
+                <p class="section-subtitle">Detailed view of all your wellness metrics</p>
+                
+                <!-- Will be populated with detailed charts and history -->
+                <div id="detailedTrackers"></div>
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="achievements" class="game-section">
+            <div class="achievements-card">
+                <h2 class="section-title">Trophy Cavern</h2>
+                <p class="section-subtitle">Achievements earned through survival and wellness</p>
+                
+                <div class="achievements-grid" id="achievementsGrid"></div>
+            </div>
+        </section>
+
+        <!-- Companions Section -->
+        <section id="companions" class="game-section">
+            <div class="companions-card">
+                <h2 class="section-title">Your Mystical Guides</h2>
+                
+                <div class="companion-profiles">
+                    <div class="companion-card astra-card">
+                        <div class="companion-avatar">✨</div>
+                        <h3>Astra</h3>
+                        <p class="companion-title">Guardian of Light</p>
+                        <p class="companion-description">
+                            Ancient and wise, Astra believes in structure and discipline. She'll push you to maintain 
+                            consistent routines and honor your commitments. Miss too many critical quests, and she'll 
+                            warn you that the cave is growing stronger.
+                        </p>
+                        <div class="companion-quote">
+                            "Survival isn't about perfection—it's about showing up, every single day."
+                        </div>
+                    </div>
+
+                    <div class="companion-card nox-card">
+                        <div class="companion-avatar">🌙</div>
+                        <h3>Nox</h3>
+                        <p class="companion-title">Keeper of Shadows</p>
+                        <p class="companion-description">
+                            Mysterious and pragmatic, Nox understands that some days are harder than others. 
+                            She'll help you adapt and find creative solutions when you're struggling. But she 
+                            won't let you make excuses—she knows the difference between a hard day and giving up.
+                        </p>
+                        <div class="companion-quote">
+                            "Progress isn't always linear, but movement is non-negotiable."
+                        </div>
+                    </div>
+                </div>
+
+                <div class="daily-message" id="dailyMessage">
+                    <div class="message-icon">💬</div>
+                    <p class="message-text">Complete your critical quests to receive today's guidance...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="game-enhanced.js"></script>
+</body>
+</html>
