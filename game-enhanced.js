@@ -12,6 +12,13 @@ const state = {
     sleepGoal: 7,
     meals: 0,
     mood: null,
+    history: [],
+    weight: {
+        current: 150,
+        start: 150,
+        goal: 135,
+        logs: []
+    },
     storyIndex: 0,
     daysSurvived: 0,
     guide: null
@@ -96,6 +103,98 @@ function updateMealsUI() {
     document.getElementById('mealText').textContent = `${state.meals}/3 healthy meals`;
 }
 
+function renderMealSuggestions() {
+    const suggestionsContainer = document.getElementById('mealSuggestions');
+    if (!suggestionsContainer) return;
+
+    const activityLevel = state.steps >= 10000 ? 'high' : state.steps >= 6000 ? 'moderate' : 'light';
+    const sleepQuality = state.sleep >= 7 ? 'rested' : state.sleep >= 6 ? 'ok' : 'tired';
+    const moodLabel = state.mood === null
+        ? 'open'
+        : state.mood === 5
+        ? 'energized'
+        : state.mood >= 4
+        ? 'positive'
+        : state.mood >= 3
+        ? 'steady'
+        : 'fragile';
+    const lastDay = state.history[state.history.length - 1];
+
+    const focus = [];
+    if (sleepQuality === 'tired' || (lastDay && lastDay.sleep < 6)) {
+        focus.push('extra protein + complex carbs early to offset low sleep');
+    }
+    if (activityLevel === 'high' || (lastDay && lastDay.steps < state.stepsGoal)) {
+        focus.push('steady energy carbs paired with lean protein to support steps');
+    }
+    if (state.mood && state.mood <= 2) {
+        focus.push('comforting warm meals with omega-3 fats for mood support');
+    }
+    if (focus.length === 0) {
+        focus.push('balanced plates with fiber, protein, and color');
+    }
+
+    const baseMeals = {
+        breakfast: [
+            'Greek yogurt parfait with berries, chia, and granola',
+            'Veggie omelet with avocado toast (1 slice) and salsa',
+            'Protein smoothie with spinach, banana, peanut butter, and oats'
+        ],
+        lunch: [
+            'Grilled chicken or tofu bowl with quinoa, greens, and roasted veggies',
+            'Turkey, hummus, and veggie wrap with a side of carrots',
+            'Lentil soup with mixed green salad and olive oil vinaigrette'
+        ],
+        dinner: [
+            'Salmon or tempeh with roasted potatoes, asparagus, and lemon',
+            'Stir-fry with shrimp or edamame, brown rice, and colorful veg',
+            'Taco salad with black beans, salsa, avocado, and crunchy slaw'
+        ],
+        snacks: [
+            'Apple slices with almond butter',
+            'String cheese and grapes',
+            'Roasted chickpeas or trail mix portion'
+        ]
+    };
+
+    if (sleepQuality === 'tired') {
+        baseMeals.breakfast.push('Steel-cut oats with walnuts, cinnamon, and protein powder');
+    }
+    if (activityLevel === 'high') {
+        baseMeals.lunch.push('Soba noodle bowl with edamame, veggies, and sesame dressing');
+        baseMeals.snacks.push('Greek yogurt with honey and pumpkin seeds');
+    }
+    if (moodLabel === 'fragile') {
+        baseMeals.dinner.push('Roast chicken with sweet potato mash and steamed greens');
+        baseMeals.snacks.push('Dark chocolate square with almonds');
+    }
+
+    suggestionsContainer.innerHTML = '';
+    const prompt = document.getElementById('nutritionPrompt');
+    if (prompt) {
+        const lastDayNote = lastDay ? `Yesterday: ${lastDay.steps.toLocaleString()} steps, ${lastDay.sleep}h sleep.` : 'No prior-day data yet.';
+        prompt.textContent = `Based on ${activityLevel} activity, ${sleepQuality} sleep, and feeling ${moodLabel}: focus on ${focus.join(' & ')}. ${lastDayNote}`;
+    }
+
+    Object.entries(baseMeals).forEach(([meal, items]) => {
+        const card = document.createElement('div');
+        card.className = 'meal-suggestion-card';
+        const title = meal.charAt(0).toUpperCase() + meal.slice(1);
+        const heading = document.createElement('h4');
+        heading.textContent = title;
+        card.appendChild(heading);
+
+        const list = document.createElement('ul');
+        items.forEach((item) => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            list.appendChild(li);
+        });
+        card.appendChild(list);
+        suggestionsContainer.appendChild(card);
+    });
+}
+
 function adjustQuest(type, delta) {
     if (type === 'water') {
         state.water = clamp(state.water + delta, 0, state.waterGoal);
@@ -131,6 +230,7 @@ function updateSteps() {
     state.steps = clamp(value, 0, 50000);
     document.getElementById('stepsInput').value = '';
     updateStepsUI();
+    renderMealSuggestions();
     refreshDailySummary();
 }
 
@@ -140,6 +240,7 @@ function updateSleep() {
     state.sleep = clamp(value, 0, 24);
     document.getElementById('sleepInput').value = '';
     updateSleepUI();
+    renderMealSuggestions();
     refreshDailySummary();
 }
 
@@ -163,6 +264,7 @@ function setMood(level) {
     document.querySelectorAll('.mood-btn').forEach((btn) => {
         btn.classList.toggle('active', parseInt(btn.dataset.mood, 10) === level);
     });
+    renderMealSuggestions();
 }
 
 function togglePriority(num) {
@@ -206,6 +308,14 @@ function endDay() {
 
     const healthChange = completionScore >= 60 ? 5 : completionScore >= 40 ? 0 : -10;
     state.health = clamp(state.health + healthChange, 0, 100);
+    state.history.push({
+        day: state.day,
+        steps: state.steps,
+        sleep: state.sleep,
+        mood: state.mood,
+        meals: state.meals,
+        weight: state.weight.current
+    });
     state.daysSurvived += 1;
     state.day += 1;
 
@@ -238,6 +348,7 @@ function resetDailyLogs() {
     updateStepsUI();
     updateSleepUI();
     updateMealsUI();
+    renderMealSuggestions();
 }
 
 function advanceStory() {
@@ -278,6 +389,57 @@ function renderStory() {
     }
 }
 
+function renderWeightTracker() {
+    const currentEl = document.getElementById('currentWeight');
+    if (!currentEl) return;
+
+    const startWeight = state.weight.start;
+    const goalWeight = state.weight.goal;
+    const currentWeight = state.weight.current;
+    const totalToLose = startWeight - goalWeight;
+    const lostSoFar = startWeight - currentWeight;
+    const remaining = Math.max(0, currentWeight - goalWeight);
+    const weeklyTarget = 1; // pound per week
+    const projectedWeeks = Math.ceil(remaining / weeklyTarget);
+    const progressPercent = clamp((lostSoFar / totalToLose) * 100, 0, 100);
+
+    currentEl.textContent = `${currentWeight.toFixed(1)} lbs`;
+    document.getElementById('goalWeight').textContent = `${goalWeight.toFixed(0)} lbs goal`;    
+    document.getElementById('weightLoss').textContent = `${lostSoFar.toFixed(1)} lbs lost of ${totalToLose} lbs`;
+    document.getElementById('weightRemaining').textContent = `${remaining.toFixed(1)} lbs to go (≈ ${projectedWeeks} weeks at 1 lb/week)`;
+
+    const bar = document.getElementById('weightProgress');
+    if (bar) {
+        bar.style.width = `${progressPercent}%`;
+    }
+
+    const historyList = document.getElementById('weightHistory');
+    historyList.innerHTML = '';
+    const recent = state.weight.logs.slice(-5).reverse();
+    if (recent.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Log your first weigh-in to start tracking.';
+        historyList.appendChild(li);
+    } else {
+        recent.forEach((entry) => {
+            const li = document.createElement('li');
+            li.textContent = `Day ${entry.day}: ${entry.value.toFixed(1)} lbs`;
+            historyList.appendChild(li);
+        });
+    }
+}
+
+function logWeight() {
+    const input = document.getElementById('weightInput');
+    const value = parseFloat(input.value);
+    if (Number.isNaN(value)) return;
+
+    state.weight.current = value;
+    state.weight.logs.push({ day: state.day, value });
+    input.value = '';
+    renderWeightTracker();
+}
+
 function init() {
     initNavigation();
     updateWaterUI();
@@ -285,6 +447,9 @@ function init() {
     updateStepsUI();
     updateSleepUI();
     updateMealsUI();
+    renderMealSuggestions();
+    state.weight.logs.push({ day: state.day, value: state.weight.current });
+    renderWeightTracker();
     refreshDailySummary();
     renderStory();
     document.getElementById('alcoholLimitInput').value = state.alcoholLimit;

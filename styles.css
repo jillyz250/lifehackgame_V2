@@ -1007,6 +1007,158 @@ body {
 }
 
 /* ================================
+   Nutrition Suggestions
+   ================================ */
+.nutrition-question {
+    margin-top: var(--spacing-md);
+    background: rgba(26, 31, 46, 0.6);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    padding: var(--spacing-sm);
+    border-radius: 12px;
+}
+
+.nutrition-question h4 {
+    color: var(--crystal-cyan);
+    margin-bottom: var(--spacing-xs);
+}
+
+.nutrition-question p {
+    color: #d1d5db;
+    margin-bottom: var(--spacing-sm);
+}
+
+.meal-suggestion-grid {
+    display: grid;
+    gap: var(--spacing-sm);
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.meal-suggestion-card {
+    background: rgba(10, 14, 26, 0.6);
+    border: 1px solid rgba(45, 212, 255, 0.25);
+    padding: var(--spacing-sm);
+    border-radius: 10px;
+}
+
+.meal-suggestion-card h4 {
+    margin-bottom: var(--spacing-xs);
+    color: var(--light-glow);
+}
+
+.meal-suggestion-card ul {
+    padding-left: 1rem;
+    color: #e5e7eb;
+    line-height: 1.5;
+}
+
+/* ================================
+   Tracker Dashboard
+   ================================ */
+.tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.tracker-tile {
+    background: rgba(10, 14, 26, 0.7);
+    border: 1px solid rgba(45, 212, 255, 0.3);
+    border-radius: 14px;
+    padding: var(--spacing-md);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.tile-header .eyebrow {
+    color: var(--crystal-purple);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.tile-subtext {
+    color: #9ca3af;
+    margin-top: 0.25rem;
+}
+
+.weight-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+}
+
+.weight-summary .label {
+    color: #9ca3af;
+    margin-bottom: 0.25rem;
+}
+
+.weight-summary .value {
+    font-size: 1.4rem;
+    color: var(--crystal-cyan);
+}
+
+.weight-progress .progress-bar {
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(45, 212, 255, 0.3);
+}
+
+.weight-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--crystal-blue), var(--crystal-purple));
+    width: 0;
+    transition: width 0.4s ease;
+}
+
+.weight-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #d1d5db;
+    font-size: 0.9rem;
+    margin-top: var(--spacing-xs);
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.weight-log {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.weight-log input {
+    flex: 1;
+    background: rgba(10, 14, 26, 0.6);
+    border: 1px solid rgba(45, 212, 255, 0.3);
+    color: #e5e7eb;
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
+}
+
+.weight-log button {
+    white-space: nowrap;
+}
+
+.weight-history {
+    margin-top: var(--spacing-sm);
+    list-style: none;
+    color: #d1d5db;
+    line-height: 1.6;
+}
+
+.weight-history li {
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hint {
+    color: #9ca3af;
+    margin-top: var(--spacing-xs);
+}
+
+/* ================================
    Utility Classes
    ================================ */
 .hidden {
