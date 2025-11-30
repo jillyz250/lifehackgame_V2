@@ -236,6 +236,11 @@
                             </div>
                         </div>
                         <p class="progress-text" id="mealText">0/3 healthy meals</p>
+                        <div class="nutrition-question">
+                            <h4>Personalized meal prompts</h4>
+                            <p id="nutritionPrompt">Tell us your steps, sleep, and mood to see tailored ideas.</p>
+                            <div class="meal-suggestion-grid" id="mealSuggestions"></div>
+                        </div>
                     </div>
 
                 </div>
@@ -379,9 +384,43 @@
             <div class="tracker-card">
                 <h2 class="section-title">Complete Tracker Dashboard</h2>
                 <p class="section-subtitle">Detailed view of all your wellness metrics</p>
-                
-                <!-- Will be populated with detailed charts and history -->
-                <div id="detailedTrackers"></div>
+
+                <div class="tracker-grid" id="detailedTrackers">
+                    <div class="tracker-tile weight-tracker">
+                        <div class="tile-header">
+                            <div>
+                                <p class="eyebrow">Goal: lose 15 lbs (≈1 lb/week)</p>
+                                <h3>Daily Weight Tracker</h3>
+                                <p class="tile-subtext">Starting at 150 lbs • Target 135 lbs • 5'6"</p>
+                            </div>
+                        </div>
+                        <div class="weight-summary">
+                            <div>
+                                <p class="label">Today's weight</p>
+                                <p class="value" id="currentWeight">150.0 lbs</p>
+                            </div>
+                            <div>
+                                <p class="label">Goal</p>
+                                <p class="value" id="goalWeight">135 lbs goal</p>
+                            </div>
+                        </div>
+                        <div class="weight-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="weightProgress"></div>
+                            </div>
+                            <div class="weight-meta">
+                                <span id="weightLoss">0.0 lbs lost of 15 lbs</span>
+                                <span id="weightRemaining">15.0 lbs to go (≈ 15 weeks at 1 lb/week)</span>
+                            </div>
+                        </div>
+                        <div class="weight-log">
+                            <input type="number" id="weightInput" step="0.2" placeholder="Today's weight (lbs)">
+                            <button class="quest-btn update" onclick="logWeight()">Log Daily Weight</button>
+                        </div>
+                        <p class="hint">Weigh in daily to see trends. Aim for ~1 lb/week loss; fluctuations of ~0.2 lbs are normal.</p>
+                        <ul class="weight-history" id="weightHistory"></ul>
+                    </div>
+                </div>
             </div>
         </section>
 
